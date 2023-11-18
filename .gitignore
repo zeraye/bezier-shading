@@ -1,0 +1,6 @@
+# Ignore all files in bin/ without extension
+bin/*
+!bin/*.*
+
+# Visual Studio Code settings
+.vscode
