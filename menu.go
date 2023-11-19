@@ -121,6 +121,7 @@ func (m *Menu) BuildUI(g *Game) fyne.CanvasObject {
 	triangulationSlider.Step = 1
 	triangulationSlider.OnChanged = triangulationSliderChanged(g, triangulationSlider)
 	triangulationSlider.Value = float64(g.config.Defaults.Triangulation)
+	triangulationCheck := widget.NewCheck("show mesh", triangulationCheckChanged(g))
 
 	pointsHeightLabel := widget.NewLabel("point height")
 	pointsHeightSlider := widget.NewSlider(0, 200)
@@ -142,7 +143,7 @@ func (m *Menu) BuildUI(g *Game) fyne.CanvasObject {
 		backgroundImageButton,
 		normalMapLabel,
 		normalMapButton,
-		container.NewGridWithColumns(2, triangulationLabel, triangulationSlider),
+		container.NewGridWithColumns(3, triangulationLabel, triangulationSlider, triangulationCheck),
 		lightAnimationButton,
 		pointsHeightContainer,
 	))

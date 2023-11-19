@@ -57,6 +57,14 @@ func (gr *gameRenderer) Draw(width, height int) image.Image {
 	}
 	wg.Wait()
 
+	if gr.game.showMesh {
+		wg.Add(len(gr.game.triangles))
+		for _, tri := range gr.game.triangles {
+			go OutlineTriangle(tri, blueColor, img, &wg)
+		}
+		wg.Wait()
+	}
+
 	for points_row_index := range gr.game.points {
 		for _, point := range gr.game.points[points_row_index] {
 			if point == gr.game.pointHeight {

@@ -35,6 +35,7 @@ type Game struct {
 	triangulation          int
 	triangles              []*geom.Triangle
 	pointHeight            *geom.Point
+	showMesh               bool
 }
 
 func NewGame(config *config.Config, window fyne.Window) *Game {
@@ -92,6 +93,7 @@ func NewGame(config *config.Config, window fyne.Window) *Game {
 		triangulation:          triangulation,
 		triangles:              triangles,
 		Busy:                   true,
+		showMesh:               false,
 	}
 
 	game.ExtendBaseWidget(game)

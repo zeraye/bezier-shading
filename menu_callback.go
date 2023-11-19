@@ -148,3 +148,9 @@ func pointsHeightSliderChanged(g *Game, pointsHeightSlider *widget.Slider) func(
 		g.Refresh()
 	}
 }
+
+func triangulationCheckChanged(g *Game) func(bool) {
+	return func(value bool) {
+		g.showMesh = value
+	}
+}

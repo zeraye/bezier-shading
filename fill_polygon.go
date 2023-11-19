@@ -195,3 +195,11 @@ func getNormalVecFromColor(c color.Color) *Vec {
 	r, g, b, _ := draw.ColorNormalRGBA(c)
 	return &Vec{(r - 0.5) * 2, (g - 0.5) * 2, b}
 }
+
+func OutlineTriangle(tri *geom.Triangle, color color.Color, img *image.RGBA, wg *sync.WaitGroup) {
+	defer wg.Done()
+
+	draw.DrawLine(*tri.P0, *tri.P1, color, img)
+	draw.DrawLine(*tri.P1, *tri.P2, color, img)
+	draw.DrawLine(*tri.P2, *tri.P0, color, img)
+}
