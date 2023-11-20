@@ -30,6 +30,20 @@ go build -o bin\bezier-shading cmd\bezier-shading\main.go
 .\bin\bezier-shading
 ```
 
+## running from release
+
+Windows
+
+```sh
+.\<path-to-exe-file>\bezier-shading.exe
+```
+
+example:
+
+```sh
+.\Downloads\bezier-shading.exe
+```
+
 ## drawing
 
 Circles are drawn using [midpoint circle algoritm](https://en.wikipedia.org/wiki/Midpoint_circle_algorithm).
