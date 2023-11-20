@@ -4,3 +4,5 @@ bin/*
 
 # Visual Studio Code settings
 .vscode
+
+fyne-cross
