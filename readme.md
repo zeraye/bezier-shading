@@ -36,10 +36,6 @@ Circles are drawn using [midpoint circle algoritm](https://en.wikipedia.org/wiki
 
 Lines are drawn using [Bresenham'slinealgorithm](https://en.wikipedia.org/wiki/Bresenham's_line_algorithm).
 
-## screenshots
-
-TODO
-
 ## author
 
 Author of this project is Jakub Rudnik.
