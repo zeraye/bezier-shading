@@ -1,4 +1,4 @@
-package bezier_shading
+package main
 
 import (
 	"math"
@@ -10,8 +10,6 @@ import (
 type Vec struct {
 	x, y, z float64
 }
-
-const eps = 10e-12
 
 // return vec from p0 to p1 (vec=p1-p0)
 func vecFromPoints(p0, p1 geom.Point) Vec {
@@ -48,14 +46,6 @@ func normalize(vec Vec) Vec {
 
 func mult(scalar float64, vec Vec) Vec {
 	return Vec{vec.x * scalar, vec.y * scalar, vec.z * scalar}
-}
-
-func add(vec0, vec1 Vec) Vec {
-	return Vec{
-		vec0.x + vec1.x,
-		vec0.y + vec1.y,
-		vec0.z + vec1.z,
-	}
 }
 
 func add3(vec0, vec1, vec2 Vec) Vec {

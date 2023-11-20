@@ -1,4 +1,4 @@
-package bezier_shading
+package main
 
 import (
 	"fmt"

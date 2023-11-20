@@ -8,7 +8,6 @@ import (
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/app"
-	bezier_shading "github.com/zeraye/bezier-shading"
 	"github.com/zeraye/bezier-shading/pkg/config"
 )
 
@@ -22,7 +21,7 @@ func main() {
 
 	app := app.NewWithID(config.Window.Name)
 	window := app.NewWindow(config.Window.Name)
-	game := bezier_shading.NewGame(config, window)
+	game := NewGame(config, window)
 
 	window.SetContent(game.BuildUI())
 	window.Resize(fyne.NewSize(float32(config.Window.Width), float32(config.Window.Height)))
@@ -42,7 +41,7 @@ func main() {
 	window.ShowAndRun()
 }
 
-func updateLightPoint(game *bezier_shading.Game, midX, midY, R, angle *float64) {
+func updateLightPoint(game *Game, midX, midY, R, angle *float64) {
 	for range time.Tick(time.Duration(time.Millisecond)) {
 		if !game.Busy {
 			game.Busy = true

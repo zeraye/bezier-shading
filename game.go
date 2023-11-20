@@ -1,4 +1,4 @@
-package bezier_shading
+package main
 
 import (
 	"image"
@@ -71,10 +71,6 @@ func NewGame(config *config.Config, window fyne.Window) *Game {
 
 	var backgroundImage image.Image = nil
 	var normalMap image.Image = nil
-	normalMap, err := getImageFromFilePath("normals/hemisphere.jpg")
-	if err != nil {
-		panic(err)
-	}
 
 	game := &Game{
 		config:                 config,

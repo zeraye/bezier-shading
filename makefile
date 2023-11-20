@@ -1,5 +1,5 @@
 build:
-	go build -o bin/bezier-shading cmd/bezier-shading/main.go 
+	go build -o bin/bezier-shading 
 
 run: build
 	./bin/bezier-shading
