@@ -6,3 +6,5 @@ bin/*
 .vscode
 
 fyne-cross
+
+*.exe

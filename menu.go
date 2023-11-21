@@ -18,6 +18,7 @@ type Menu struct {
 	ksSlider                   *widget.Slider
 	mSlider                    *widget.Slider
 	lightAnimationButton       *widget.Button
+	surfaceButton              *widget.Button
 	lightHeightSlider          *widget.Slider
 	backgroundSolidColorLabel  *widget.Label
 	backgroundSolidColorButton *widget.Button
@@ -130,9 +131,24 @@ func (m *Menu) BuildUI(g *Game) fyne.CanvasObject {
 	pointsHeightContainer := container.NewGridWithColumns(2, pointsHeightLabel, pointsHeightSlider)
 	m.pointsHeightContainer = pointsHeightContainer
 
+	surfaceButton := widget.NewButton("Bezier (currently)", surfaceButtonTapped(g))
+	m.surfaceButton = surfaceButton
+
+	alphaSlider := widget.NewSlider(0, 2)
+	alphaSlider.OnChanged = alphaSliderChanged(g, alphaSlider)
+	alphaSlider.Step = 0.01
+	alphaSlider.Value = 0.0
+
+	betaSlider := widget.NewSlider(0, 2)
+	betaSlider.OnChanged = betaSliderChanged(g, betaSlider)
+	betaSlider.Step = 0.01
+	betaSlider.Value = 0.0
+
 	return container.New(m, title, container.NewVBox(
-		container.NewGridWithColumns(2, kdLabel, kdSlider),
-		container.NewGridWithColumns(2, ksLabel, ksSlider),
+		container.NewGridWithColumns(2,
+			container.NewGridWithColumns(2, kdLabel, kdSlider),
+			container.NewGridWithColumns(2, ksLabel, ksSlider),
+		),
 		container.NewGridWithColumns(2, mLabel, mSlider),
 		container.NewGridWithColumns(2, lightColorLabel, lightColorButton),
 		container.NewGridWithColumns(2, lightHeightLabel, lightHeightSlider),
@@ -144,7 +160,8 @@ func (m *Menu) BuildUI(g *Game) fyne.CanvasObject {
 		normalMapLabel,
 		normalMapButton,
 		container.NewGridWithColumns(3, triangulationLabel, triangulationSlider, triangulationCheck),
-		lightAnimationButton,
+		container.NewGridWithColumns(2, lightAnimationButton, surfaceButton),
 		pointsHeightContainer,
+		container.NewGridWithColumns(2, alphaSlider, betaSlider),
 	))
 }

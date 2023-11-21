@@ -48,7 +48,7 @@ func (gr *gameRenderer) Draw(width, height int) image.Image {
 
 	blueColor := draw.RGBAToColor([4]uint8{0, 0, 255, 255})
 	whiteColor := draw.RGBAToColor([4]uint8{255, 255, 255, 255})
-	yellowColor := draw.RGBAToColor([4]uint8{255, 255, 0, 255})
+	// yellowColor := draw.RGBAToColor([4]uint8{255, 255, 0, 255})
 
 	var wg sync.WaitGroup
 	wg.Add(len(gr.game.triangles))
@@ -57,13 +57,13 @@ func (gr *gameRenderer) Draw(width, height int) image.Image {
 	}
 	wg.Wait()
 
-	if gr.game.showMesh {
-		wg.Add(len(gr.game.triangles))
-		for _, tri := range gr.game.triangles {
-			go OutlineTriangle(tri, blueColor, img, &wg)
-		}
-		wg.Wait()
-	}
+	// if gr.game.showMesh {
+	// 	wg.Add(len(gr.game.triangles))
+	// 	for _, tri := range gr.game.triangles {
+	// 		go OutlineTriangle(tri, blueColor, img, &wg)
+	// 	}
+	// 	wg.Wait()
+	// }
 
 	for points_row_index := range gr.game.points {
 		for _, point := range gr.game.points[points_row_index] {
@@ -75,7 +75,7 @@ func (gr *gameRenderer) Draw(width, height int) image.Image {
 		}
 	}
 
-	draw.DrawCircle(*gr.game.LightPoint, 8, yellowColor, true, img)
+	// draw.DrawCircle(*gr.game.LightPoint, 8, yellowColor, true, img)
 
 	// draw raster border
 	for x := 0; x < img.Bounds().Dx(); x++ {

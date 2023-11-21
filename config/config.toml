@@ -6,7 +6,7 @@ FixedSize = true
 Theme = "light"
 
 [UI]
-BackgroundColorRGBA = [255, 255, 255, 255]
+BackgroundColorRGBA = [0, 0, 0, 255]
 SecondaryBackgroundColorRGBA = [82, 78, 183, 255]
 RasterBorderColorRGBA = [0, 0, 0, 255]
 RasterWidth = 600

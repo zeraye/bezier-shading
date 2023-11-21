@@ -37,9 +37,20 @@ func FillPolygon(points []*geom.Point, color color.Color, img *image.RGBA, g *Ga
 	n_arr := []Vec{}
 	z_arr := []float64{}
 	for i := 0; i < len(points); i++ {
-		ndu := bezierDU(points[i].X/float64(g.config.UI.RasterWidth), points[i].Y/float64(g.config.UI.RasterHeight), g.pointsHeight)
-		ndv := bezierDV(points[i].X/float64(g.config.UI.RasterWidth), points[i].Y/float64(g.config.UI.RasterHeight), g.pointsHeight)
-		n_arr = append(n_arr, normalize(crossProduct(ndu, ndv)))
+		if g.surface == "bezier" {
+			ndu := bezierDU(points[i].X/float64(g.config.UI.RasterWidth), points[i].Y/float64(g.config.UI.RasterHeight), g.pointsHeight)
+			ndv := bezierDV(points[i].X/float64(g.config.UI.RasterWidth), points[i].Y/float64(g.config.UI.RasterHeight), g.pointsHeight)
+			n_arr = append(n_arr, normalize(crossProduct(ndu, ndv)))
+		} else {
+			width := float64(g.config.UI.RasterWidth)
+			z := math.Sqrt(
+				math.Pow(0.5, 2) -
+					math.Pow(points[i].X/width-0.5, 2) -
+					math.Pow(points[i].Y/width-0.5, 2))
+			n_arr = append(n_arr, normalize(Vec{
+				points[i].X/width - 0.5, points[i].Y/width - 0.5, z,
+			}))
+		}
 		z_arr = append(z_arr, bezier(points[i].X/float64(g.config.UI.RasterWidth), points[i].Y/float64(g.config.UI.RasterHeight), g.pointsHeight).z)
 	}
 
@@ -95,14 +106,56 @@ func FillPolygon(points []*geom.Point, color color.Color, img *image.RGBA, g *Ga
 				if g.normalMap != nil {
 					normalmapVec = getNormalVecFromColor(g.normalMap.At(int(x), int(y)))
 				}
+				pColor := color
+				if g.showMesh {
+					blueColor := draw.RGBAToColor([4]uint8{0, 0, 255, 255})
+					if x == x0 || y == ymin {
+						pColor = blueColor
+					}
+				}
+				// width := float64(g.config.UI.RasterWidth)
+				// z := math.Sqrt(
+				// 	math.Pow(0.5, 2) -
+				// 		math.Pow(x/width-0.5, 2) -
+				// 		math.Pow(y/width-0.5, 2))
+				// vec := Vec{
+				// 	x/width - 0.5, y/width - 0.5, z,
+				// }
+				cColor, z := calcColor(pColor, g, x, y, n_arr, z_arr, points, normalmapVec)
 
-				img.Set(int(x), int(y), calcColor(color, g, x, y, n_arr, z_arr, points, normalmapVec))
+				alpha := g.alpha
+				beta := g.beta
+
+				pX := x
+				pY := y
+				pZ := z
+
+				// _, _, _ = alpha, beta, pZ
+
+				pX -= float64(g.config.UI.RasterWidth) / 2
+				pY -= float64(g.config.UI.RasterHeight) / 2
+
+				tmpX := pX
+				tmpY := pY
+				pX = tmpX*math.Cos(alpha) - tmpY*math.Sin(alpha)
+				pY = tmpX*math.Sin(alpha) + tmpY*math.Cos(alpha)
+
+				tmpX = pX
+				tmpY = pY
+				tmpZ := pZ
+				pY = tmpY*math.Cos(beta) - tmpZ*math.Sin(beta)
+				pZ = tmpY*math.Sin(beta) + tmpZ*math.Cos(beta)
+
+				pX += float64(g.config.UI.RasterWidth) / 2
+				pY += float64(g.config.UI.RasterHeight) / 2
+
+				img.Set(int(pX), int(pY), cColor)
 			}
 		}
 	}
 }
 
-func calcColor(c color.Color, g *Game, x, y float64, n_arr []Vec, z_arr []float64, points []*geom.Point, normalmapVec *Vec) color.Color {
+func calcColor(c color.Color, g *Game, x, y float64, n_arr []Vec, z_arr []float64, points []*geom.Point, normalmapVec *Vec) (color.Color, float64) {
 	kd := g.menu.kdSlider.Value
 	ks := g.menu.ksSlider.Value
 	ILr, ILg, ILb, _ := draw.ColorNormalRGBA(g.lightColor)
@@ -177,7 +230,7 @@ func calcColor(c color.Color, g *Game, x, y float64, n_arr []Vec, z_arr []float6
 	Ig := math.Min(ILg*IOg*kdcosNL+ILg*IOg*kscosmVR, 255)
 	Ib := math.Min(ILb*IOb*kdcosNL+ILb*IOb*kscosmVR, 255)
 
-	return color.RGBA{uint8(Ir), uint8(Ig), uint8(Ib), 255}
+	return color.RGBA{uint8(Ir), uint8(Ig), uint8(Ib), 255}, z
 }
 
 func getX(y float64, s geom.Segment) float64 {

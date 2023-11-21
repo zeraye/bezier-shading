@@ -36,6 +36,9 @@ type Game struct {
 	triangles              []*geom.Triangle
 	pointHeight            *geom.Point
 	showMesh               bool
+	surface                string
+	alpha                  float64
+	beta                   float64
 }
 
 func NewGame(config *config.Config, window fyne.Window) *Game {
@@ -90,6 +93,9 @@ func NewGame(config *config.Config, window fyne.Window) *Game {
 		triangles:              triangles,
 		Busy:                   true,
 		showMesh:               false,
+		surface:                "bezier",
+		alpha:                  0,
+		beta:                   0,
 	}
 
 	game.ExtendBaseWidget(game)

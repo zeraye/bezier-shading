@@ -37,6 +37,22 @@ func animationButtonTapped(g *Game) func() {
 	}
 }
 
+func surfaceButtonTapped(g *Game) func() {
+	return func() {
+		if g.surface == "bezier" {
+			g.menu.surfaceButton.Text = "Hemisphere (currently)"
+		} else {
+			g.menu.surfaceButton.Text = "Bezier (currently)"
+		}
+		g.menu.surfaceButton.Refresh()
+		if g.surface == "bezier" {
+			g.surface = "hemisphere"
+		} else {
+			g.surface = "bezier"
+		}
+	}
+}
+
 func normalMapfileOpenCallback(g *Game, normalMapLabel *widget.Label) func(fyne.URIReadCloser, error) {
 	return func(urc fyne.URIReadCloser, err error) {
 		if err != nil {
@@ -126,6 +142,24 @@ func triangulationSliderChanged(g *Game, triangulationSlider *widget.Slider) fun
 		g.triangulation = int(value)
 		g.triangles = makeTriangles(g.config, g.points, g.triangulation)
 		triangulationSlider.Refresh()
+		g.Refresh()
+	}
+}
+
+func alphaSliderChanged(g *Game, alphaSlider *widget.Slider) func(float64) {
+	return func(value float64) {
+		alphaSlider.Value = value
+		g.alpha = value
+		alphaSlider.Refresh()
+		g.Refresh()
+	}
+}
+
+func betaSliderChanged(g *Game, betaSlider *widget.Slider) func(float64) {
+	return func(value float64) {
+		betaSlider.Value = value
+		g.beta = value
+		betaSlider.Refresh()
 		g.Refresh()
 	}
 }
