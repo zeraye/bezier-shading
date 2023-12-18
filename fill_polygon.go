@@ -8,6 +8,7 @@ import (
 	"slices"
 	"sync"
 
+	"github.com/goki/mat32"
 	"github.com/zeraye/bezier-shading/pkg/draw"
 	"github.com/zeraye/bezier-shading/pkg/geom"
 )
@@ -119,6 +120,8 @@ func FillPolygon(points []*geom.Point, color color.Color, img *image.RGBA, g *Ga
 					blueColor := draw.RGBAToColor([4]uint8{0, 0, 255, 255})
 					if x == x0 || y == ymin {
 						pColor = blueColor
+					} else {
+						continue
 					}
 				}
 
@@ -127,28 +130,32 @@ func FillPolygon(points []*geom.Point, color color.Color, img *image.RGBA, g *Ga
 				alpha := g.alpha
 				beta := g.beta
 
-				pX := x
-				pY := y
-				pZ := z * 5
+				vhalf := mat32.NewVec4(
+					float32(g.config.UI.RasterWidth)/2,
+					float32(g.config.UI.RasterWidth)/2,
+					0,
+					0,
+				)
 
-				pX -= float64(g.config.UI.RasterWidth) / 2
-				pY -= float64(g.config.UI.RasterHeight) / 2
+				v := mat32.NewVec4(float32(x), float32(y), float32(z*5), 1)
+				v = v.Sub(vhalf)
 
-				tmpX := pX
-				tmpY := pY
-				pX = tmpX*math.Cos(alpha) - tmpY*math.Sin(alpha)
-				pY = tmpX*math.Sin(alpha) + tmpY*math.Cos(alpha)
+				malpha := mat32.NewMat4()
+				malpha.SetRotationZ(float32(alpha))
+				v = v.MulMat4(malpha)
 
-				tmpX = pX
-				tmpY = pY
-				tmpZ := pZ
-				pY = tmpY*math.Cos(beta) - tmpZ*math.Sin(beta)
-				pZ = tmpY*math.Sin(beta) + tmpZ*math.Cos(beta)
+				mbeta := mat32.NewMat4()
+				mbeta.SetRotationX(float32(beta))
+				v = v.MulMat4(mbeta)
 
-				pX += float64(g.config.UI.RasterWidth) / 2
-				pY += float64(g.config.UI.RasterHeight) / 2
+				v = v.Add(vhalf)
 
-				img.Set(int(pX), int(pY), cColor)
+				if g.showMesh {
+					img.Set(int(v.X), int(v.Y), pColor)
+				} else {
+					img.Set(int(v.X), int(v.Y), cColor)
+				}
+
 			}
 		}
 	}
