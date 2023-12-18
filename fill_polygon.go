@@ -46,13 +46,13 @@ func FillPolygon(points []*geom.Point, color color.Color, img *image.RGBA, g *Ga
 			width := float64(g.config.UI.RasterWidth)
 			r := width / 2
 			if math.Pow(points[i].X-r, 2)+math.Pow(-points[i].Y+r, 2) < math.Pow(r, 2) {
-			z := math.Sqrt(
-				math.Pow(0.5, 2) -
-					math.Pow(points[i].X/width-0.5, 2) -
-					math.Pow(points[i].Y/width-0.5, 2))
-			n_arr = append(n_arr, normalize(Vec{
-				points[i].X/width - 0.5, points[i].Y/width - 0.5, z,
-			}))
+				z := math.Sqrt(
+					math.Pow(0.5, 2) -
+						math.Pow(points[i].X/width-0.5, 2) -
+						math.Pow(points[i].Y/width-0.5, 2))
+				n_arr = append(n_arr, normalize(Vec{
+					points[i].X/width - 0.5, points[i].Y/width - 0.5, z,
+				}))
 				z_arr = append(z_arr, z)
 			} else {
 				n_arr = append(n_arr, normalize(Vec{0, 0, 1}))
@@ -136,7 +136,7 @@ func FillPolygon(points []*geom.Point, color color.Color, img *image.RGBA, g *Ga
 
 				pX := x
 				pY := y
-				pZ := z
+				pZ := z * 5
 
 				// _, _, _ = alpha, beta, pZ
 
@@ -190,6 +190,7 @@ func calcColor(c color.Color, g *Game, x, y float64, n_arr []Vec, z_arr []float6
 
 	z := z_arr[0]*weight.x + z_arr[1]*weight.y + z_arr[2]*weight.z
 
+	maxNormalZ := 0.0
 	if normalmapVec != nil {
 		binorm := crossProduct(n, Vec{0, 0, 1})
 		binorm = normalize(binorm)
@@ -208,11 +209,11 @@ func calcColor(c color.Color, g *Game, x, y float64, n_arr []Vec, z_arr []float6
 
 		n = normalize(n)
 
-		z += normalmapVec.z
+		z += normalmapVec.z * 5
+		maxNormalZ = math.Max(maxNormalZ, normalmapVec.z*5)
 	}
-
+	z -= maxNormalZ
 	z *= 100
-
 	l := Vec{(g.LightPoint.X - x), (g.LightPoint.Y - y), g.lightHeight - z}
 	l = normalize(l)
 
