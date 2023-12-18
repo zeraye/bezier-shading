@@ -41,8 +41,11 @@ func FillPolygon(points []*geom.Point, color color.Color, img *image.RGBA, g *Ga
 			ndu := bezierDU(points[i].X/float64(g.config.UI.RasterWidth), points[i].Y/float64(g.config.UI.RasterHeight), g.pointsHeight)
 			ndv := bezierDV(points[i].X/float64(g.config.UI.RasterWidth), points[i].Y/float64(g.config.UI.RasterHeight), g.pointsHeight)
 			n_arr = append(n_arr, normalize(crossProduct(ndu, ndv)))
+			z_arr = append(z_arr, bezier(points[i].X/float64(g.config.UI.RasterWidth), points[i].Y/float64(g.config.UI.RasterHeight), g.pointsHeight).z)
 		} else {
 			width := float64(g.config.UI.RasterWidth)
+			r := width / 2
+			if math.Pow(points[i].X-r, 2)+math.Pow(-points[i].Y+r, 2) < math.Pow(r, 2) {
 			z := math.Sqrt(
 				math.Pow(0.5, 2) -
 					math.Pow(points[i].X/width-0.5, 2) -
@@ -50,8 +53,13 @@ func FillPolygon(points []*geom.Point, color color.Color, img *image.RGBA, g *Ga
 			n_arr = append(n_arr, normalize(Vec{
 				points[i].X/width - 0.5, points[i].Y/width - 0.5, z,
 			}))
+				z_arr = append(z_arr, z)
+			} else {
+				n_arr = append(n_arr, normalize(Vec{0, 0, 1}))
+				z_arr = append(z_arr, 0)
+			}
+
 		}
-		z_arr = append(z_arr, bezier(points[i].X/float64(g.config.UI.RasterWidth), points[i].Y/float64(g.config.UI.RasterHeight), g.pointsHeight).z)
 	}
 
 	ymin := points[ind[0]].Y
