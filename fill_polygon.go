@@ -121,14 +121,7 @@ func FillPolygon(points []*geom.Point, color color.Color, img *image.RGBA, g *Ga
 						pColor = blueColor
 					}
 				}
-				// width := float64(g.config.UI.RasterWidth)
-				// z := math.Sqrt(
-				// 	math.Pow(0.5, 2) -
-				// 		math.Pow(x/width-0.5, 2) -
-				// 		math.Pow(y/width-0.5, 2))
-				// vec := Vec{
-				// 	x/width - 0.5, y/width - 0.5, z,
-				// }
+
 				cColor, z := calcColor(pColor, g, x, y, n_arr, z_arr, points, normalmapVec)
 
 				alpha := g.alpha
@@ -137,8 +130,6 @@ func FillPolygon(points []*geom.Point, color color.Color, img *image.RGBA, g *Ga
 				pX := x
 				pY := y
 				pZ := z * 5
-
-				// _, _, _ = alpha, beta, pZ
 
 				pX -= float64(g.config.UI.RasterWidth) / 2
 				pY -= float64(g.config.UI.RasterHeight) / 2
